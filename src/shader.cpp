@@ -93,15 +93,15 @@ void Shader::checkCompileError(GLuint const & iStage, GLenum iType)
 		glGetShaderInfoLog(iStage, logLength, nullptr, log.get());
 		if(iType == GL_VERTEX_SHADER)
 		{
-			std::cerr << "Error while compiling the vertex shader : " << log << std::endl;
+			std::cerr << "Error while compiling the vertex shader : " << log.get() << std::endl;
 		}
 		else if(iType == GL_FRAGMENT_SHADER)
 		{
-			std::cerr << "Error while compiling the fragment shader : " << log << std::endl;
+			std::cerr << "Error while compiling the fragment shader : " << log.get() << std::endl;
 		}
 		else if(iType == GL_GEOMETRY_SHADER)
 		{
-			std::cerr << "Error while compiling the geometry shader : " << log << std::endl;
+			std::cerr << "Error while compiling the geometry shader : " << log.get() << std::endl;
 		}
 		glDeleteShader(iStage);
 	}
@@ -119,7 +119,7 @@ bool Shader::checkLinkError()
 		glGetProgramiv(m_program, GL_INFO_LOG_LENGTH, &logLength);
 		log = std::make_unique<char>(logLength);
 		glGetProgramInfoLog(m_program, logLength, nullptr, log.get());
-		std::cerr << "Error while linking shaders into a program : " << log << std::endl;
+		std::cerr << "Error while linking shaders into a program : " << log.get() << std::endl;
 		return false;
 	}
 	return true;

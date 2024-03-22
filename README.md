@@ -7,11 +7,11 @@ Implementation of the paper => [https://citeseerx.ist.psu.edu/document?repid=rep
 ## Build with cmake
 
 `
-cmake -B .
+cmake -B build -S . -D CMAKE_BUILD_TYPE=Release
 `
 
 `
-cmake --build . --config Release
+cmake --build build --config Release
 `
 
 ## Run the program
@@ -19,6 +19,11 @@ cmake --build . --config Release
 ### Windows
 `
 .\hbao.exe
+`
+
+### Linux
+`
+./hbao
 `
 
 ## User interface
