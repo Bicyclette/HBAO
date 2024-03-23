@@ -10,11 +10,11 @@ Application::Application(unsigned int const & iWidth, unsigned int const & iHeig
 	create_3Dscenes();
 
 	// set shaders
-	m_shader_GBuffer = std::make_shared<Shader>("shaders/GBuffer/vertex.glsl", "shaders/GBuffer/fragment.glsl");
+	m_shader_GBuffer = std::make_shared<Shader>(std::string(PROJECT_DIRECTORY) + "/shaders/GBuffer/vertex.glsl", std::string(PROJECT_DIRECTORY) + "/shaders/GBuffer/fragment.glsl");
 	m_shader_GBuffer->setType(Shader::Type::GBUFFER);
-	m_shader_deferred = std::make_shared<Shader>("shaders/deferred/vertex.glsl", "shaders/deferred/fragment.glsl");
+	m_shader_deferred = std::make_shared<Shader>(std::string(PROJECT_DIRECTORY) + "/shaders/deferred/vertex.glsl", std::string(PROJECT_DIRECTORY) + "/shaders/deferred/fragment.glsl");
 	m_shader_deferred->setType(Shader::Type::DEFERRED);
-	m_shader_directional_shadowMap = std::make_shared<Shader>("shaders/shadows/directional/vertex.glsl", "shaders/shadows/directional/fragment.glsl");
+	m_shader_directional_shadowMap = std::make_shared<Shader>(std::string(PROJECT_DIRECTORY) + "/shaders/shadows/directional/vertex.glsl", std::string(PROJECT_DIRECTORY) + "/shaders/shadows/directional/fragment.glsl");
 	m_shader_directional_shadowMap->setType(Shader::Type::DIR_SHADOWMAP);
 
 	// user interface
@@ -22,6 +22,7 @@ Application::Application(unsigned int const & iWidth, unsigned int const & iHeig
 	m_ui.shadowMap_bias = 0.001f;
 	m_ui.m_ao_mode = 1;
 	m_ui.m_scene = 0;
+	m_ui.m_draw_ui = true;
 
 	// Geometry Framebuffer
 	create_GBuffer();
@@ -53,125 +54,125 @@ void Application::create_3Dscenes()
 	// set lighting
 	m_scene[0].m_directional_light = std::make_unique<DirectionalLight>(glm::vec3(5.0f, 20.0f, 0.0f), 20.0f, glm::vec3(-0.60f, -1.5f, -0.180f), glm::vec3(1.0f), 2.85f);
 
-	m_scene[0].m_meshes.push_back(std::make_shared<Mesh>("assets/sponza/roof.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/roof_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/roof_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/roof_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/roof_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared<Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/roof.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/roof_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/roof_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/roof_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/roof_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/vase.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/vase_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/vase_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/vase_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/vase_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/vase.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/vase_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/vase_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/vase_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/vase_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/lion.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/lion_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/lion_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/lion_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/lion_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/lion.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/lion_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/lion_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/lion_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/lion_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/walls.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/walls_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/walls_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/walls_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/walls_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/walls.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/walls_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/walls_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/walls_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/walls_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/voutes.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/voutes_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/voutes_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/voutes_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/voutes_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/voutes.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/voutes_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/voutes_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/voutes_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/voutes_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/ceiling.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/ceiling_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/ceiling_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/ceiling_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/ceiling_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/ceiling.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/ceiling_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/ceiling_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/ceiling_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/ceiling_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/pillars_lvl0.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/pillars_lvl0_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/pillars_lvl0_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/pillars_lvl0_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/pillars_lvl0_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl0.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl0_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl0_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl0_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl0_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/ground.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/ground_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/ground_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/ground_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/ground_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/ground.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/ground_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/ground_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/ground_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/ground_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/pillars_lvl1.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/pillars_lvl1_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/pillars_lvl1_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/pillars_lvl1_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/pillars_lvl1_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl1.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl1_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl1_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl1_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl1_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/doors.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/doors_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/doors_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/doors_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/doors_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/doors.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/doors_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/doors_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/doors_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/doors_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/pillars_lvl1_2.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/pillars_lvl1_2_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/pillars_lvl1_2_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/pillars_lvl1_2_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/pillars_lvl1_2_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl1_2.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl1_2_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl1_2_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl1_2_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/pillars_lvl1_2_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/bar.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/bar_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/bar_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/bar_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/bar_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/bar.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/bar_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/bar_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/bar_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/bar_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/green_fabric_circle.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/green_fabric_circle_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/green_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/green_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/green_fabric_circle_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/green_fabric_circle.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/green_fabric_circle_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/green_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/green_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/green_fabric_circle_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/blue_fabric_circle.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/blue_fabric_circle_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/blue_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/blue_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/blue_fabric_circle_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/blue_fabric_circle.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/blue_fabric_circle_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/blue_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/blue_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/blue_fabric_circle_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/red_fabric_circle.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/red_fabric_circle_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/red_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/red_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/red_fabric_circle_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/red_fabric_circle.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/red_fabric_circle_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/red_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/red_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/red_fabric_circle_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/blue_fabric.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/blue_fabric_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/blue_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/blue_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/blue_fabric_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/blue_fabric.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/blue_fabric_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/blue_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/blue_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/blue_fabric_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/red_fabric.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/red_fabric_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/red_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/red_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/red_fabric_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/red_fabric.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/red_fabric_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/red_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/red_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/red_fabric_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/green_fabric.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/green_fabric_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/green_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/green_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/green_fabric_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/green_fabric.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/green_fabric_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/green_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/green_fabric_circle_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/green_fabric_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/cuve.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/cuve_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/cuve_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/cuve_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/cuve_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/cuve.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/cuve_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/cuve_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/cuve_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/cuve_normal.jpg", GL_RGB, TextureType::NORMAL);
 
-	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>("assets/sponza/face.obj", false));
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/face_albedo.jpg", GL_RGB, TextureType::ALBEDO);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/face_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/face_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D("assets/sponza/face_normal.jpg", GL_RGB, TextureType::NORMAL);
+	m_scene[0].m_meshes.push_back(std::make_shared < Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/sponza/face.obj", false));
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/face_albedo.jpg", GL_RGB, TextureType::ALBEDO);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/face_metallic_roughness.jpg", GL_RGB, TextureType::METALLIC);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/face_metallic_roughness.jpg", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[0].m_meshes[m_scene[0].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/sponza/face_normal.jpg", GL_RGB, TextureType::NORMAL);
 
 	// ============================== DRAGON ==============================
 	// ====================================================================
@@ -182,13 +183,13 @@ void Application::create_3Dscenes()
 	// set lighting
 	m_scene[1].m_directional_light = std::make_unique<DirectionalLight>(glm::vec3(0.0f, 7.0f, 0.0f), 10.0f, glm::vec3(-0.60f, -1.0f, -0.25f), glm::vec3(1.0f), 2.85f);
 	
-	m_scene[1].m_meshes.push_back(std::make_shared<Mesh>("assets/dragon/dragon.obj", false));
-	m_scene[1].m_meshes[m_scene[1].m_meshes.size() - 1]->m_material.addTexture2D("assets/dragon/albedo.jpeg", GL_RGB, TextureType::ALBEDO);
-	m_scene[1].m_meshes[m_scene[1].m_meshes.size() - 1]->m_material.addTexture2D("assets/dragon/roughness.png", GL_RGB, TextureType::ROUGHNESS);
-	m_scene[1].m_meshes[m_scene[1].m_meshes.size() - 1]->m_material.addTexture2D("assets/dragon/normal.png", GL_RGB, TextureType::NORMAL);
+	m_scene[1].m_meshes.push_back(std::make_shared<Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/dragon/dragon.obj", false));
+	m_scene[1].m_meshes[m_scene[1].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/dragon/albedo.jpeg", GL_RGB, TextureType::ALBEDO);
+	m_scene[1].m_meshes[m_scene[1].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/dragon/roughness.png", GL_RGB, TextureType::ROUGHNESS);
+	m_scene[1].m_meshes[m_scene[1].m_meshes.size() - 1]->m_material.addTexture2D(std::string(PROJECT_DIRECTORY) + "/assets/dragon/normal.png", GL_RGB, TextureType::NORMAL);
 	m_scene[1].m_meshes[m_scene[1].m_meshes.size() - 1]->m_material.m_metallic = 0.0f;
 
-	m_scene[1].m_meshes.push_back(std::make_shared<Mesh>("assets/dragon/plane.obj", false));
+	m_scene[1].m_meshes.push_back(std::make_shared<Mesh>(std::string(PROJECT_DIRECTORY) + "/assets/dragon/plane.obj", false));
 	m_scene[1].m_meshes[m_scene[1].m_meshes.size() - 1]->m_material.m_albedo = glm::vec3(1.0f);
 	m_scene[1].m_meshes[m_scene[1].m_meshes.size() - 1]->m_material.m_metallic = 0.0f;
 	m_scene[1].m_meshes[m_scene[1].m_meshes.size() - 1]->m_material.m_roughness = 0.65f;
@@ -339,9 +340,9 @@ void Application::init_ssao()
 	m_ssao.populate_samples();
 
 	// create AO shader
-	m_ssao.m_shader_AO = std::make_shared<Shader>("shaders/AO/vertex.glsl", "shaders/AO/fragment.glsl");
+	m_ssao.m_shader_AO = std::make_shared<Shader>(std::string(PROJECT_DIRECTORY) + "/shaders/AO/vertex.glsl", std::string(PROJECT_DIRECTORY) + "/shaders/AO/fragment.glsl");
 	m_ssao.m_shader_AO->setType(Shader::Type::AO);
-	m_ssao.m_shader_AO_blur = std::make_shared<Shader>("shaders/AO/blur/vertex.glsl", "shaders/AO/blur/fragment.glsl");
+	m_ssao.m_shader_AO_blur = std::make_shared<Shader>(std::string(PROJECT_DIRECTORY) + "/shaders/AO/blur/vertex.glsl", std::string(PROJECT_DIRECTORY) + "/shaders/AO/blur/fragment.glsl");
 	m_ssao.m_shader_AO_blur->setType(Shader::Type::BLUR);
 }
 
@@ -477,9 +478,9 @@ void HBAO::init()
 	}
 	m_randStep_texture = createRandomRayMarchingStepsTexture(randStep);
 
-	m_shader = std::make_shared<Shader>("shaders/HBAO/vertex.glsl", "shaders/HBAO/fragment.glsl");
+	m_shader = std::make_shared<Shader>(std::string(PROJECT_DIRECTORY) + "/shaders/HBAO/vertex.glsl", std::string(PROJECT_DIRECTORY) + "/shaders/HBAO/fragment.glsl");
 	m_shader->setType(Shader::Type::HBAO);
-	m_shader_blur = std::make_shared<Shader>("shaders/HBAO/blur/vertex.glsl", "shaders/HBAO/blur/fragment.glsl");
+	m_shader_blur = std::make_shared<Shader>(std::string(PROJECT_DIRECTORY) + "/shaders/HBAO/blur/vertex.glsl", std::string(PROJECT_DIRECTORY) + "/shaders/HBAO/blur/fragment.glsl");
 	m_shader_blur->setType(Shader::Type::BLUR);
 }
 

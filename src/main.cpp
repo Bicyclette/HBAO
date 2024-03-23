@@ -51,12 +51,17 @@ void processInput(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_F12) == GLFW_PRESS) // recompile deferred shader, and gbuffer shader
+	if (glfwGetKey(window, GLFW_KEY_F12) == GLFW_PRESS) // recompile shaders
 	{
-		g_app->m_shader_deferred = std::make_shared<Shader>("shaders/deferred/vertex.glsl", "shaders/deferred/fragment.glsl");
-		g_app->m_shader_GBuffer = std::make_shared<Shader>("shaders/gbuffer/vertex.glsl", "shaders/gbuffer/fragment.glsl");
-		g_app->m_ssao.m_shader_AO = std::make_shared<Shader>("shaders/AO/vertex.glsl", "shaders/AO/fragment.glsl");
-		g_app->m_hbao.m_shader = std::make_shared<Shader>("shaders/HBAO/vertex.glsl", "shaders/HBAO/fragment.glsl");
+		g_app->m_shader_deferred = std::make_shared<Shader>(std::string(PROJECT_DIRECTORY) + "/shaders/deferred/vertex.glsl", std::string(PROJECT_DIRECTORY) + "/shaders/deferred/fragment.glsl");
+		g_app->m_shader_GBuffer = std::make_shared<Shader>(std::string(PROJECT_DIRECTORY) + "/shaders/GBuffer/vertex.glsl", std::string(PROJECT_DIRECTORY) + "/shaders/GBuffer/fragment.glsl");
+		g_app->m_ssao.m_shader_AO = std::make_shared<Shader>(std::string(PROJECT_DIRECTORY) + "/shaders/AO/vertex.glsl", std::string(PROJECT_DIRECTORY) + "/shaders/AO/fragment.glsl");
+		g_app->m_hbao.m_shader = std::make_shared<Shader>(std::string(PROJECT_DIRECTORY) + "/shaders/HBAO/vertex.glsl", std::string(PROJECT_DIRECTORY) + "/shaders/HBAO/fragment.glsl");
+	}
+
+	if(glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+	{
+		g_app->m_ui.m_draw_ui = !g_app->m_ui.m_draw_ui;
 	}
 
 	// CAMERA RELATED
@@ -160,77 +165,80 @@ void renderScene()
 
 void draw_UI()
 {
-	int activeScene = g_app->m_ui.m_scene;
-
-	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(300, 80));
-	ImGui::Begin("Scene");
-	ImGui::RadioButton("Sponza", &g_app->m_ui.m_scene, 0);
-	ImGui::RadioButton("Dragon", &g_app->m_ui.m_scene, 1);
-	ImGui::End();
-
-	ImGui::SetNextWindowPos(ImVec2(0, 80));
-	ImGui::SetNextWindowSize(ImVec2(300, 55));
-	if (g_app->m_ui.m_scene == 0)
+	if(g_app->m_ui.m_draw_ui)
 	{
-		ImGui::Begin("Sponza");
+		int activeScene = g_app->m_ui.m_scene;
+
+		ImGui::SetNextWindowPos(ImVec2(0, 0));
+		ImGui::SetNextWindowSize(ImVec2(300, 80));
+		ImGui::Begin("Scene");
+		ImGui::RadioButton("Sponza", &g_app->m_ui.m_scene, 0);
+		ImGui::RadioButton("Dragon", &g_app->m_ui.m_scene, 1);
+		ImGui::End();
+
+		ImGui::SetNextWindowPos(ImVec2(0, 80));
+		ImGui::SetNextWindowSize(ImVec2(300, 55));
+		if (g_app->m_ui.m_scene == 0)
+		{
+			ImGui::Begin("Sponza");
+		}
+		else if (g_app->m_ui.m_scene == 1)
+		{
+			ImGui::Begin("Dragon");
+		}
+		ImGui::RadioButton("shaded", &g_app->m_ui.m_draw_mode, 0);
+		ImGui::End();
+
+		ImGui::SetNextWindowPos(ImVec2(0, 135));
+		ImGui::SetNextWindowSize(ImVec2(300, 130));
+		ImGui::Begin("GBuffer");
+		ImGui::RadioButton("show per fragment depth", &g_app->m_ui.m_draw_mode, 1);
+		ImGui::RadioButton("show per fragment albedo", &g_app->m_ui.m_draw_mode, 2);
+		ImGui::RadioButton("show per fragment (view) position", &g_app->m_ui.m_draw_mode, 3);
+		ImGui::RadioButton("show per fragment (view) normal", &g_app->m_ui.m_draw_mode, 4);
+		ImGui::End();
+
+		ImGui::SetNextWindowPos(ImVec2(0, 265));
+		ImGui::SetNextWindowSize(ImVec2(300, 80));
+		ImGui::Begin("Directional shadow map");
+		ImGui::RadioButton("Show", &g_app->m_ui.m_draw_mode, 5);
+		ImGui::SliderFloat("bias", &g_app->m_ui.shadowMap_bias, 0.0f, 0.005f);
+		ImGui::End();
+
+		ImGui::SetNextWindowPos(ImVec2(0, 345));
+		ImGui::SetNextWindowSize(ImVec2(300, 110));
+		ImGui::Begin("Directional light");
+		ImGui::ColorEdit3("color", glm::value_ptr(g_app->m_scene[activeScene].m_directional_light->m_color));
+		ImGui::SliderFloat3("direction", glm::value_ptr(g_app->m_scene[activeScene].m_directional_light->m_direction), -5.0f, 5.0f);
+		ImGui::SliderFloat("intensity", &g_app->m_scene[activeScene].m_directional_light->m_intensity, 0.0f, 10.0f);
+		ImGui::End();
+
+		ImGui::SetNextWindowPos(ImVec2(0, 455));
+		ImGui::SetNextWindowSize(ImVec2(500, 100));
+		ImGui::Begin("AO mode");
+		ImGui::RadioButton("SSAO", &g_app->m_ui.m_ao_mode, 0);
+		ImGui::RadioButton("HBAO", &g_app->m_ui.m_ao_mode, 1);
+		ImGui::RadioButton("disable", &g_app->m_ui.m_ao_mode, 2);
+		ImGui::End();
+
+		ImGui::SetNextWindowPos(ImVec2(0, 555));
+		ImGui::SetNextWindowSize(ImVec2(500, 105));
+		ImGui::Begin("SSAO");
+		ImGui::SliderFloat("hemisphere radius", &g_app->m_ssao.m_hemi_radius, 0.5f, 2.5f);
+		ImGui::SliderInt("samples", &g_app->m_ssao.m_sample_count, 16, 64);
+		ImGui::RadioButton("Show SSAO texture", &g_app->m_ui.m_draw_mode, 6);
+		ImGui::End();
+
+		ImGui::SetNextWindowPos(ImVec2(0, 660));
+		ImGui::SetNextWindowSize(ImVec2(500, 150));
+		ImGui::Begin("HBAO");
+		ImGui::SliderFloat("radius", &g_app->m_hbao.m_R, 0.5f, 2.5f);
+		ImGui::SliderInt("direction count", &g_app->m_hbao.m_Nd, 16, 64);
+		ImGui::SliderInt("ray marching steps", &g_app->m_hbao.m_Ns, 4, 16);
+		ImGui::SliderFloat("angle bias", &g_app->m_hbao.m_angle_bias, glm::radians(10.0f), glm::radians(45.0f));
+		ImGui::RadioButton("Show HBAO texture", &g_app->m_ui.m_draw_mode, 7);
+		ImGui::End();
 	}
-	else if (g_app->m_ui.m_scene == 1)
-	{
-		ImGui::Begin("Dragon");
-	}
-	ImGui::RadioButton("shaded", &g_app->m_ui.m_draw_mode, 0);
-	ImGui::End();
-
-	ImGui::SetNextWindowPos(ImVec2(0, 135));
-	ImGui::SetNextWindowSize(ImVec2(300, 130));
-	ImGui::Begin("GBuffer");
-	ImGui::RadioButton("show per fragment depth", &g_app->m_ui.m_draw_mode, 1);
-	ImGui::RadioButton("show per fragment albedo", &g_app->m_ui.m_draw_mode, 2);
-	ImGui::RadioButton("show per fragment (view) position", &g_app->m_ui.m_draw_mode, 3);
-	ImGui::RadioButton("show per fragment (view) normal", &g_app->m_ui.m_draw_mode, 4);
-	ImGui::End();
-
-	ImGui::SetNextWindowPos(ImVec2(0, 265));
-	ImGui::SetNextWindowSize(ImVec2(300, 80));
-	ImGui::Begin("Directional shadow map");
-	ImGui::RadioButton("Show", &g_app->m_ui.m_draw_mode, 5);
-	ImGui::SliderFloat("bias", &g_app->m_ui.shadowMap_bias, 0.0f, 0.005f);
-	ImGui::End();
-
-	ImGui::SetNextWindowPos(ImVec2(0, 345));
-	ImGui::SetNextWindowSize(ImVec2(300, 110));
-	ImGui::Begin("Directional light");
-	ImGui::ColorEdit3("color", glm::value_ptr(g_app->m_scene[activeScene].m_directional_light->m_color));
-	ImGui::SliderFloat3("direction", glm::value_ptr(g_app->m_scene[activeScene].m_directional_light->m_direction), -5.0f, 5.0f);
-	ImGui::SliderFloat("intensity", &g_app->m_scene[activeScene].m_directional_light->m_intensity, 0.0f, 10.0f);
-	ImGui::End();
-
-	ImGui::SetNextWindowPos(ImVec2(0, 455));
-	ImGui::SetNextWindowSize(ImVec2(500, 100));
-	ImGui::Begin("AO mode");
-	ImGui::RadioButton("SSAO", &g_app->m_ui.m_ao_mode, 0);
-	ImGui::RadioButton("HBAO", &g_app->m_ui.m_ao_mode, 1);
-	ImGui::RadioButton("disable", &g_app->m_ui.m_ao_mode, 2);
-	ImGui::End();
-
-	ImGui::SetNextWindowPos(ImVec2(0, 555));
-	ImGui::SetNextWindowSize(ImVec2(500, 105));
-	ImGui::Begin("SSAO");
-	ImGui::SliderFloat("hemisphere radius", &g_app->m_ssao.m_hemi_radius, 0.5f, 2.5f);
-	ImGui::SliderInt("samples", &g_app->m_ssao.m_sample_count, 16, 64);
-	ImGui::RadioButton("Show SSAO texture", &g_app->m_ui.m_draw_mode, 6);
-	ImGui::End();
-
-	ImGui::SetNextWindowPos(ImVec2(0, 660));
-	ImGui::SetNextWindowSize(ImVec2(500, 150));
-	ImGui::Begin("HBAO");
-	ImGui::SliderFloat("radius", &g_app->m_hbao.m_R, 0.5f, 2.5f);
-	ImGui::SliderInt("direction count", &g_app->m_hbao.m_Nd, 16, 64);
-	ImGui::SliderInt("ray marching steps", &g_app->m_hbao.m_Ns, 4, 16);
-	ImGui::SliderFloat("angle bias", &g_app->m_hbao.m_angle_bias, glm::radians(10.0f), glm::radians(45.0f));
-	ImGui::RadioButton("Show HBAO texture", &g_app->m_ui.m_draw_mode, 7);
-	ImGui::End();
 }
 
 void ImGui_init(GLFWwindow* win)

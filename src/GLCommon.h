@@ -38,5 +38,6 @@ struct UI
 	int m_draw_mode; // 0 = shaded, 1 = depth, 2 = albedo, 3 = view position, 4 = view normal, 5 = shadowMap, 6 = SSAO, 7 = HBAO
 	float shadowMap_bias;
 	int m_ao_mode; // 0 = SSAO, 1 = HBAO
-	int m_scene; // 0 = sponza, 1 = lucy
+	int m_scene; // 0 = sponza, 1 = dragon
+	bool m_draw_ui;
 };

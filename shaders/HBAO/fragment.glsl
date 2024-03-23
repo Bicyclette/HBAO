@@ -48,7 +48,7 @@ void main()
 	int num_steps = Ns + randStep;
 	float ray_step = R / float(num_steps);
 
-	float n = float(Nd) * 0.5f;
+	float n = float(Nd) * float(num_steps);
 	HBAO = 0.0f;
 	for(int i = 0; i < Nd; ++i)
 	{
@@ -80,9 +80,11 @@ void main()
 			// compute occlusion
 			float W = max(0.0f, 1.0f - pow((r / R), 2.0f));
 			float ao = sin(h) - sin(t + angle_bias);
-			HBAO += (ao * W) / (n * M_PI);
+			HBAO += (ao * W);
 		}
 	}
 
+	HBAO /= n;
 	HBAO = 1.0f - HBAO;
+	HBAO = pow(HBAO, 7);
 }

@@ -34,6 +34,8 @@ src/imgui/imgui_tables.cpp
 src/imgui/imgui_widgets.cpp
 )
 
+add_definitions(-DPROJECT_DIRECTORY="${PROJECT_SOURCE_DIR}")
+
 target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/dep/glad/src/glad.c)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/dep/glad/include/)
 
